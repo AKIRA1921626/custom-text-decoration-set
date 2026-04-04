@@ -1,4 +1,4 @@
-# custom-text-decoration-seto
+# custom-text-decoration-set
 テロップ装飾セットのテロッププリセット単品  
 
 下記スクリプトのテロッププリセットの部分を単品にわけたものとなります。  
