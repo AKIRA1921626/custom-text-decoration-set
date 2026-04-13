@@ -55,7 +55,7 @@
 
 local telop = require("custom_telop_presets")
 
-local text, _ = obj.getvalue("text","テキスト")
+local text = obj.getvalue("テキスト","テキスト")
 local count = 1
 local i = 0
 if type(text) == "string" then
