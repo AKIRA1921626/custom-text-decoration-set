@@ -382,6 +382,7 @@ function M.telop_presets(p, b_obj)
         if eff.type == "縁取り" then
             local c = eff.col
             local s = eff.size
+            local b = eff.blur
             local draw = true
             
             if bi == 1 then
@@ -390,22 +391,25 @@ function M.telop_presets(p, b_obj)
                     s = p.b1
                     if p.b1 == 0 then draw = false end
                 end
+                if p.b1b and p.b1b > -1 then b = p.b1b end
             elseif bi == 2 then
                 if p.cb2_en == 1 then c = p.cb2 end
                 if p.b2 > -1 then 
                     s = p.b2
                     if p.b2 == 0 then draw = false end
                 end
+                if p.b2b and p.b2b > -1 then b = p.b2b end
             elseif bi == 3 then
                 if p.cb3_en == 1 then c = p.cb3 end
                 if p.b3 > -1 then 
                     s = p.b3
                     if p.b3 == 0 then draw = false end
                 end
+                if p.b3b and p.b3b > -1 then b = p.b3b end
             end
             
             if draw then
-                obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", eff.blur, "縁色", c)
+                obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
             end
             bi = bi + 1
             
@@ -448,7 +452,8 @@ function M.telop_presets(p, b_obj)
         local s = (p.b1 > -1) and p.b1 or 7
         if s > 0 then
             local c = (p.cb1_en == 1) and p.cb1 or C_BLACK
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", 10, "縁色", c)
+            local b = (p.b1b and p.b1b > -1) and p.b1b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
             bi = bi + 1
         end
     end
@@ -456,7 +461,8 @@ function M.telop_presets(p, b_obj)
         local s = (p.b2 > -1) and p.b2 or 14
         if s > 0 then
             local c = (p.cb2_en == 1) and p.cb2 or C_WHITE
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", 10, "縁色", c)
+            local b = (p.b2b and p.b2b > -1) and p.b2b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
             bi = bi + 1
         end
     end
@@ -464,7 +470,8 @@ function M.telop_presets(p, b_obj)
         local s = (p.b3 > -1) and p.b3 or 20
         if s > 0 then
             local c = (p.cb3_en == 1) and p.cb3 or C_BLACK
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", 10, "縁色", c)
+            local b = (p.b3b and p.b3b > -1) and p.b3b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
             bi = bi + 1
         end
     end

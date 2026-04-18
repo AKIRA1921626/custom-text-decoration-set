@@ -33,24 +33,27 @@
 
 --group:装飾個別調整・追加設定,false
 --check@ext_c_b1_en:縁1色を上書き/指定,0
---track@ext_b1_size:縁1幅(-1維持/0無効),-1,500,-1,1
+--track@ext_b1_size:縁1幅(-1維持),-1,500,-1,1
+--track@ext_b1_blur:縁1ぼかし(-1維持),-1,500,-1,1
 --color@ext_c_b1:縁色1,0xffffff
 --check@ext_c_b2_en:縁2色を上書き/指定,0
---track@ext_b2_size:縁2幅(-1維持/0無効),-1,500,-1,1
+--track@ext_b2_size:縁2幅(-1維持),-1,500,-1,1
+--track@ext_b2_blur:縁2ぼかし(-1維持),-1,500,-1,1
 --color@ext_c_b2:縁色2,0x1ec832
 --check@ext_c_b3_en:縁3色を上書き/指定,0
---track@ext_b3_size:縁3幅(-1維持/0無効),-1,500,-1,1
+--track@ext_b3_size:縁3幅(-1維持),-1,500,-1,1
+--track@ext_b3_blur:縁3ぼかし(-1維持),-1,500,-1,1
 --color@ext_c_b3:縁色3,0x3232c8
 --check@ext_c_shadow_en:標準影色を上書き/指定,0
 --track@ext_s_x:標準影X,-500,500,10,1
 --track@ext_s_y:標準影Y,-500,500,10,1
---track@ext_s_alpha:標準影濃さ(-1維持/0無効),-1,100,-1,1
+--track@ext_s_alpha:標準影濃さ(-1維持),-1,100,-1,1
 --track@ext_s_diff:標準影拡散,0,100,10,1
 --color@ext_c_shadow:影色,0xffff00
 --check@ext_c_hshadow_en:HD影色を上書き/指定,0
 --track@ext_h_x:HD影X,-500,500,10,1
 --track@ext_h_y:HD影Y,-500,500,10,1
---track@ext_h_alpha:HD影濃さ(-1維持/0無効),-1,100,-1,1
+--track@ext_h_alpha:HD影濃さ(-1維持),-1,100,-1,1
 --color@ext_c_hshadow:HD影色,0x00ffff
 --group
 
@@ -157,6 +160,7 @@ local params = {
     cs_en = ext_c_shadow_en, cs = ext_c_shadow,
     chs_en = ext_c_hshadow_en, chs = ext_c_hshadow,
     b1 = ext_b1_size, b2 = ext_b2_size, b3 = ext_b3_size,
+    b1b = ext_b1_blur, b2b = ext_b2_blur, b3b = ext_b3_blur,
     sx = ext_s_x, sy = ext_s_y, sa = ext_s_alpha, sd = ext_s_diff,
     hx = ext_h_x, hy = ext_h_y, ha = ext_h_alpha,
     
