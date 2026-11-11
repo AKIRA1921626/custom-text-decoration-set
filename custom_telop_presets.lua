@@ -364,7 +364,11 @@ function M.telop_presets(p, b_obj)
     -- =============================================================================
     if data.text_col then
         local c = data.text_col; if p.cen==1 then c = p.ct end
-        obj.effect("単色化", "強さ", 100, "色", c, "輝度を保持する", 0)
+        if p.dis==1 then
+            -- 文字色を無効化がONの時は何もしない。
+        else
+            obj.effect("単色化", "強さ", 100, "色", c, "輝度を保持する", 0)
+        end
     end
 
     -- ユーザー定義の追加グラデーションロジックを実行 (.anm2から渡された場合)

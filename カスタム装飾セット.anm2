@@ -16,6 +16,7 @@
 --check@text_alter_size:テロッププリセット時、装飾サイズをテキストと連動,1
 
 --group:カラー・グラデーション設定,false
+--check@ext_c_text_dis:文字色を無効化,0
 --check@ext_c_text_en:文字色を上書き,0
 --color@ext_c_text:上書き文字色,0xffffff
 --check@grd_enable:グラデーション,0
@@ -153,7 +154,7 @@ local params = {
     deco6 = deco6, deco7 = deco7, deco8 = deco8, deco9 = deco9, deco10 = deco10,
     deco11 = deco11, deco12 = deco12, deco13 = deco13, deco14 = deco14,
 
-    cen = ext_c_text_en, ct = ext_c_text,
+    cen = ext_c_text_en, ct = ext_c_text, dis = ext_c_text_dis,
     cb1_en = ext_c_b1_en, cb1 = ext_c_b1,
     cb2_en = ext_c_b2_en, cb2 = ext_c_b2,
     cb3_en = ext_c_b3_en, cb3 = ext_c_b3,
