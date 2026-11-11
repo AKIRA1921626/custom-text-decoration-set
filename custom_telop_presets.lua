@@ -25,9 +25,9 @@ function M.telop_presets(p, b_obj)
     local base_colors = {
         white        = 0xebebeb, -- deco2
         black        = 0x141414, -- deco3
-        red          = 0xff2b2c, -- deco4
+        red          = 0xc81919, -- deco4
         orange       = 0xff9632, -- deco5
-        yellow       = 0xfff000, -- deco6
+        yellow       = 0xebe11e, -- deco6
         yellow_green = 0xb4ff3c, -- deco7
         green        = 0x00c832, -- deco8
         light_blue   = 0x32e6ff, -- deco9
