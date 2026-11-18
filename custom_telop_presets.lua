@@ -44,6 +44,11 @@ function M.telop_presets(p, b_obj)
         return {type="縁取り", size=size, blur=10, col=col} 
     end
 
+    -- 凸エッジ
+    local function e(width, height,rotate) 
+        return {type="凸エッジ", width=width, hegith=height, rotate=rotate}
+    end
+
     -- シャドウ
     local function s(x, y, alpha, diff, col) 
         local ih = false
@@ -339,7 +344,7 @@ function M.telop_presets(p, b_obj)
         cur_idx = cur_idx + 4
     end
 
-    -- =============================================================================
+-- =============================================================================
     -- 6. データ選択ロジック
     -- =============================================================================
     local data = { text_col = nil, effects = {} }
@@ -360,8 +365,10 @@ function M.telop_presets(p, b_obj)
     end
 
     -- =============================================================================
-    -- 7. AviUtlオブジェクトへの反映 (描画)
+    -- 7. AviUtlオブジェクトへの反映 (描画順の制御)
     -- =============================================================================
+
+    -- ① 文字色
     if data.text_col then
         local c = data.text_col; if p.cen==1 then c = p.ct end
         if p.dis==1 then
@@ -371,64 +378,145 @@ function M.telop_presets(p, b_obj)
         end
     end
 
-    -- ユーザー定義の追加グラデーションロジックを実行 (.anm2から渡された場合)
+    -- ② グラデーション (カスタムグラデーション関数)
     if p.custom_grad_func then
         p.custom_grad_func()
     end
 
+    -- プリセットに含まれるエフェクトから「縁取り」と「シャドウ」を抽出しつつ、
+    -- ユーザー指定の凸エッジを各段階で挟み込むためのカウンタ
     local bi = 1
     local has_s_std = false
     local has_s_hard = false
 
-    for _, eff in ipairs(data.effects) do
-        if not eff then break end
+    -- テンプレート内の縁取りを順番に処理するための補助関数
+    local function draw_border_index(index, eff)
+        if not eff then return end
+        local c = eff.col
+        local s = eff.size
+        local b = eff.blur
+        local draw = true
         
-        if eff.type == "縁取り" then
-            local c = eff.col
-            local s = eff.size
-            local b = eff.blur
-            local draw = true
-            
-            if bi == 1 then
-                if p.cb1_en == 1 then c = p.cb1 end
-                if p.b1 > -1 then 
-                    s = p.b1
-                    if p.b1 == 0 then draw = false end
-                end
-                if p.b1b and p.b1b > -1 then b = p.b1b end
-            elseif bi == 2 then
-                if p.cb2_en == 1 then c = p.cb2 end
-                if p.b2 > -1 then 
-                    s = p.b2
-                    if p.b2 == 0 then draw = false end
-                end
-                if p.b2b and p.b2b > -1 then b = p.b2b end
-            elseif bi == 3 then
-                if p.cb3_en == 1 then c = p.cb3 end
-                if p.b3 > -1 then 
-                    s = p.b3
-                    if p.b3 == 0 then draw = false end
-                end
-                if p.b3b and p.b3b > -1 then b = p.b3b end
+        if index == 1 then
+            if p.cb1_en == 1 then c = p.cb1 end
+            if p.b1 > -1 then 
+                s = p.b1
+                if p.b1 == 0 then draw = false end
             end
-            
-            if draw then
-                obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
+            if p.b1b and p.b1b > -1 then b = p.b1b end
+        elseif index == 2 then
+            if p.cb2_en == 1 then c = p.cb2 end
+            if p.b2 > -1 then 
+                s = p.b2
+                if p.b2 == 0 then draw = false end
             end
-            bi = bi + 1
-            
-        elseif eff.type == "シャドウ" then
+            if p.b2b and p.b2b > -1 then b = p.b2b end
+        elseif index == 3 then
+            if p.cb3_en == 1 then c = p.cb3 end
+            if p.b3 > -1 then 
+                s = p.b3
+                if p.b3 == 0 then draw = false end
+            end
+            if p.b3b and p.b3b > -1 then b = p.b3b end
+        end
+        
+        if draw then
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
+        end
+    end
+
+    -- テンプレート内のエフェクト配列から、指定タイプのN番目の要素を取得するヘルパー
+    local function get_eff_by_type_and_order(eff_type, target_index)
+        local count = 0
+        for _, eff in ipairs(data.effects) do
+            if eff and eff.type == eff_type then
+                count = count + 1
+                if count == target_index then return eff end
+            end
+        end
+        return nil
+    end
+
+    -- ③ 凸エッジ1
+    if p.ce1_en == 1 then
+        obj.effect("凸エッジ", "幅", p.e1w1, "高さ", p.e1h1, "角度", p.e1r1)
+    end
+
+    -- ④ 縁取り1 (または未定義時のフォールバック)
+    local eff1 = get_eff_by_type_and_order("縁取り", 1)
+    if eff1 then
+        draw_border_index(1, eff1)
+    elseif (p.b1 > 0 or p.cb1_en == 1) then
+        local s = (p.b1 > -1) and p.b1 or 7
+        if s > 0 then
+            local c = (p.cb1_en == 1) and p.cb1 or C_BLACK
+            local b = (p.b1b and p.b1b > -1) and p.b1b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
+        end
+    end
+
+    -- ⑤ 凸エッジ2
+    if p.ce2_en == 1 then
+        obj.effect("凸エッジ", "幅", p.e2w2, "高さ", p.e2h2, "角度", p.e2r2)
+    end
+
+    -- ⑥ 縁取り2
+    local eff2 = get_eff_by_type_and_order("縁取り", 2)
+    if eff2 then
+        draw_border_index(2, eff2)
+    elseif (p.b2 > 0 or p.cb2_en == 1) then
+        local s = (p.b2 > -1) and p.b2 or 14
+        if s > 0 then
+            local c = (p.cb2_en == 1) and p.cb2 or C_WHITE
+            local b = (p.b2b and p.b2b > -1) and p.b2b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
+        end
+    end
+
+    -- ⑦ 凸エッジ3
+    if p.ce3_en == 1 then
+        obj.effect("凸エッジ", "幅", p.e3w3, "高さ", p.e3h3, "角度", p.e3r3)
+    end
+
+    -- ⑧ 縁取り3
+    local eff3 = get_eff_by_type_and_order("縁取り", 3)
+    if eff3 then
+        draw_border_index(3, eff3)
+    elseif (p.b3 > 0 or p.cb3_en == 1) then
+        local s = (p.b3 > -1) and p.b3 or 20
+        if s > 0 then
+            local c = (p.cb3_en == 1) and p.cb3 or C_BLACK
+            local b = (p.b3b and p.b3b > -1) and p.b3b or 10
+            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
+        end
+    end
+
+    -- ⑨ 凸エッジ4
+    if p.ce4_en == 1 then
+        obj.effect("凸エッジ", "幅", p.e4w4, "高さ", p.e4h4, "角度", p.e4r4)
+    end
+
+    -- その他のエフェクト（ノイズやグラデーションなど、縁取り・凸エッジ以外の固有エフェクト）の処理
+    for _, eff in ipairs(data.effects) do
+        if eff and eff.type ~= "縁取り" and eff.type ~= "シャドウ" then
+            if eff.type == "ノイズ" then
+                obj.effect("ノイズ", "強さ", eff.pow, "速度X", eff.speedX, "速度Y", eff.speedY, "周期X", eff.cycleX, "周期Y", eff.cycleY, "合成モード", eff.mode, "ノイズの種類", eff.n_type)
+            elseif eff.type == "グラデーション" then
+                obj.effect("グラデーション", "強さ", eff.pow, "中心X", eff.x, "中心Y", eff.y, "角度", eff.angle, "幅", eff.width * p.prisets_resize, "合成モード", eff.mode, "形状", eff.shape, "開始色", eff.start_c, "終了色", eff.end_c)
+            end
+        end
+    end
+
+    -- ⑩ シャドウの処理（テンプレート内または追加指定分）
+    for _, eff in ipairs(data.effects) do
+        if eff and eff.type == "シャドウ" then
             local c = eff.col
             local draw = true
-            
             if eff.ih then
                 has_s_hard = true
                 if p.chs_en == 1 then c = p.chs end
                 local a = eff.alpha
-                if p.ha > -1 then
-                    a = p.ha
-                    if a == 0 then draw = false end
-                end
+                if p.ha > -1 then a = p.ha if a == 0 then draw = false end end
                 if draw then
                     obj.effect("ドロップシャドウ", "X", p.hx * p.prisets_resize, "Y", p.hy * p.prisets_resize, "濃さ", a, "拡散", 0, "影色", c)
                 end
@@ -436,52 +524,15 @@ function M.telop_presets(p, b_obj)
                 has_s_std = true
                 if p.cs_en == 1 then c = p.cs end
                 local a = eff.alpha
-                if p.sa > -1 then
-                    a = p.sa
-                    if a == 0 then draw = false end
-                end
+                if p.sa > -1 then a = p.sa if a == 0 then draw = false end end
                 if draw then
                     obj.effect("ドロップシャドウ", "X", p.sx * p.prisets_resize, "Y", p.sy * p.prisets_resize, "濃さ", a, "拡散", p.sd, "影色", c)
                 end
             end
-        elseif eff.type == "ノイズ" then
-            obj.effect("ノイズ", "強さ", eff.pow, "速度X", eff.speedX, "速度Y", eff.speedY, "周期X", eff.cycleX, "周期Y", eff.cycleY, "合成モード", eff.mode, "ノイズの種類", eff.n_type)
-        elseif eff.type == "グラデーション" then
-            obj.effect("グラデーション", "強さ", eff.pow, "中心X", eff.x, "中心Y", eff.y, "角度", eff.angle, "幅", eff.width * p.prisets_resize, "合成モード", eff.mode, "形状", eff.shape, "開始色", eff.start_c, "終了色", eff.end_c)
         end
     end
 
-    -- 追加指定の縁取りを描画 (指定されたが存在しなかった場合)
-    if (p.b1 > 0 or p.cb1_en == 1) and bi <= 1 then
-        local s = (p.b1 > -1) and p.b1 or 7
-        if s > 0 then
-            local c = (p.cb1_en == 1) and p.cb1 or C_BLACK
-            local b = (p.b1b and p.b1b > -1) and p.b1b or 10
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
-            bi = bi + 1
-        end
-    end
-    if (p.b2 > 0 or p.cb2_en == 1) and bi <= 2 then
-        local s = (p.b2 > -1) and p.b2 or 14
-        if s > 0 then
-            local c = (p.cb2_en == 1) and p.cb2 or C_WHITE
-            local b = (p.b2b and p.b2b > -1) and p.b2b or 10
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
-            bi = bi + 1
-        end
-    end
-    if (p.b3 > 0 or p.cb3_en == 1) and bi <= 3 then
-        local s = (p.b3 > -1) and p.b3 or 20
-        if s > 0 then
-            local c = (p.cb3_en == 1) and p.cb3 or C_BLACK
-            local b = (p.b3b and p.b3b > -1) and p.b3b or 10
-            obj.effect("縁取り", "サイズ", s * p.prisets_resize, "ぼかし", b, "縁色", c)
-            bi = bi + 1
-        end
-    end
-
-
-    -- 追加指定のシャドウを描画 (指定されたが存在しなかった場合)
+    -- 追加指定のシャドウを描画 (テンプレートになかった場合)
     if not has_s_hard and (p.ha > 0 or p.chs_en == 1) then
         local a = (p.ha > -1) and p.ha or 100
         if a > 0 then
