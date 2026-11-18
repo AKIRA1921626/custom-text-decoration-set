@@ -131,7 +131,7 @@
 
 ----------------- モジュールを読み込み、読み込めていなかったらエラーをログに出力
 
-local condition, AKIRA_helper = pcall(require, "AKIRA_aviutl2_helper")
+local condition, AKIRA_helper = pcall(require, "AKIRA_aviutl2_helper_ctp")
 
 local AKIRA_h = nil
 if condition then
