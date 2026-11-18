@@ -378,6 +378,17 @@ function M.telop_presets(p, b_obj)
         end
     end
 
+    -- その他のエフェクト（ノイズやグラデーションなど、縁取り・凸エッジ以外の固有エフェクト）の処理
+    for _, eff in ipairs(data.effects) do
+        if eff and eff.type ~= "縁取り" and eff.type ~= "シャドウ" then
+            if eff.type == "ノイズ" then
+                obj.effect("ノイズ", "強さ", eff.pow, "速度X", eff.speedX, "速度Y", eff.speedY, "周期X", eff.cycleX, "周期Y", eff.cycleY, "合成モード", eff.mode, "ノイズの種類", eff.n_type)
+            elseif eff.type == "グラデーション" then
+                obj.effect("グラデーション", "強さ", eff.pow, "中心X", eff.x, "中心Y", eff.y, "角度", eff.angle, "幅", eff.width * p.prisets_resize, "合成モード", eff.mode, "形状", eff.shape, "開始色", eff.start_c, "終了色", eff.end_c)
+            end
+        end
+    end
+
     -- ② グラデーション (カスタムグラデーション関数)
     if p.custom_grad_func then
         p.custom_grad_func()
@@ -494,17 +505,6 @@ function M.telop_presets(p, b_obj)
     -- ⑨ 凸エッジ4
     if p.ce4_en == 1 then
         obj.effect("凸エッジ", "幅", p.e4w4, "高さ", p.e4h4, "角度", p.e4r4)
-    end
-
-    -- その他のエフェクト（ノイズやグラデーションなど、縁取り・凸エッジ以外の固有エフェクト）の処理
-    for _, eff in ipairs(data.effects) do
-        if eff and eff.type ~= "縁取り" and eff.type ~= "シャドウ" then
-            if eff.type == "ノイズ" then
-                obj.effect("ノイズ", "強さ", eff.pow, "速度X", eff.speedX, "速度Y", eff.speedY, "周期X", eff.cycleX, "周期Y", eff.cycleY, "合成モード", eff.mode, "ノイズの種類", eff.n_type)
-            elseif eff.type == "グラデーション" then
-                obj.effect("グラデーション", "強さ", eff.pow, "中心X", eff.x, "中心Y", eff.y, "角度", eff.angle, "幅", eff.width * p.prisets_resize, "合成モード", eff.mode, "形状", eff.shape, "開始色", eff.start_c, "終了色", eff.end_c)
-            end
-        end
     end
 
     -- ⑩ シャドウの処理（テンプレート内または追加指定分）
