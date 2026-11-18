@@ -23,6 +23,7 @@
 --color@grd_start_col:グラデ開始色,0xff0000
 --color@grd_end_col:グラデ終了色,0xffff00
 --select@grd_type:グラデーションタイプ=1,線形=1,円形=2,矩形=3,凸形=4
+--select@grd_interpolation:グラデーション色補間=1,RGB=1,OKLAB=2,OKLCH=3,OKLCH(+)=4,OKLCH(-)=5
 --track@grd_pow:グラデ強さ,0,100,100,0.1
 --track@grd_x:グラデ中心X,-5000,5000,0,0.1
 --track@grd_y:グラデ中心Y,-5000,5000,0,0.1
@@ -33,6 +34,7 @@
 --group
 
 --hide@grd_type:grd_enable==0
+--hide@grd_interpolation:grd_enalbe==0
 --hide@grd_pow:grd_enable==0
 --hide@grd_x:grd_enable==0
 --hide@grd_y:grd_enable==0
@@ -182,6 +184,7 @@ local user_grad_execution = function()
 
     local GRD_TYPES = {"線形", "円形", "矩形", "凸形"}
     local GRD_COMPOSITES = {"通常", "加算", "減算", "乗算", "スクリーン", "オーバーレイ", "比較(明)", "比較(暗)", "輝度", "色差", "陰影", "明暗", "差分"}
+    local CRD_INTERPOLATION = {"RGB", "OKLAB", "OKLCH", "OKLCH(+)", "OKLCH(-)"}
 
     -- グラデーションの各種う数値をテキストのサイズに合わせるための変数
     local my_resize = 1 -- ここがテキストのサイズにグラデーションの数値を合わるためのものなる
@@ -196,8 +199,9 @@ local user_grad_execution = function()
     if grd_enable ~= 0 then
         local g_type = GRD_TYPES[grd_type] or "線形"
         local g_comp = GRD_COMPOSITES[grd_composite] or "通常"
-        local noC1 = (grd_start_col == nil) and 1 or 0
-        local noC2 = (grd_end_col == nil) and 1 or 0
+        local g_int  = CRD_INTERPOLATION[grd_interpolation] or "RGB"
+        -- local noC1 = (grd_start_col == nil) and 1 or 0
+        -- local noC2 = (grd_end_col == nil) and 1 or 0
 
         obj.effect("グラデーション",
             "強さ",      grd_pow,
@@ -207,10 +211,11 @@ local user_grad_execution = function()
             "幅",        grd_width * my_resize,
             "合成モード", g_comp,
             "形状",      g_type,
+            "色補間",     g_int,
             "開始色",    grd_start_col,
-            "no_color",  noC1,
-            "終了色",    grd_end_col,
-            "no_color2", noC2
+            --"no_color",  noC1,
+            "終了色",    grd_end_col
+            --"no_color2", noC2
         )
     end
 end
