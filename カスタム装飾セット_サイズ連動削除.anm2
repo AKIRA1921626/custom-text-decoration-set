@@ -41,18 +41,41 @@
 --hide@alter_size:grd_enable==0
 
 --group:装飾個別調整・追加設定,false
+--check@ext_c_e1_en:凸エッジ1指定,0
+--track@ext_e1_width1:凸エッジ1幅,0,100,4
+--track@ext_e1_height1:凸エッジ1高さ,0,3.00,1.00,0.01
+--track@ext_e1_rotate1:凸エッジ1角度,-3600,3600,45.00,0.01
+
 --check@ext_c_b1_en:縁1色を上書き/指定,0
 --color@ext_c_b1:縁色1,0xffffff
 --track@ext_b1_size:縁1幅(-1維持),-1,500,-1,1
 --track@ext_b1_blur:縁1ぼかし(-1維持),-1,500,-1,1
+
+--check@ext_c_e2_en:凸エッジ2指定,0
+--track@ext_e2_width2:凸エッジ2幅,0,100,4
+--track@ext_e2_height2:凸エッジ2高さ,0,3.00,1.00,0.01
+--track@ext_e2_rotate2:凸エッジ2角度,-3600,3600,45.00,0.01
+
 --check@ext_c_b2_en:縁2色を上書き/指定,0
 --color@ext_c_b2:縁色2,0x1ec832
 --track@ext_b2_size:縁2幅(-1維持),-1,500,-1,1
 --track@ext_b2_blur:縁2ぼかし(-1維持),-1,500,-1,1
+
+--check@ext_c_e3_en:凸エッジ3指定,0
+--track@ext_e3_width3:凸エッジ3幅,0,100,4
+--track@ext_e3_height3:凸エッジ3高さ,0,3.00,1.00,0.01
+--track@ext_e3_rotate3:凸エッジ3角度,-3600,3600,45.00,0.01
+
 --check@ext_c_b3_en:縁3色を上書き/指定,0
 --color@ext_c_b3:縁色3,0x3232c8
 --track@ext_b3_size:縁3幅(-1維持),-1,500,-1,1
 --track@ext_b3_blur:縁3ぼかし(-1維持),-1,500,-1,1
+
+--check@ext_c_e4_en:凸エッジ4指定,0
+--track@ext_e4_width4:凸エッジ4幅,0,100,4
+--track@ext_e4_height4:凸エッジ4高さ,0,3.00,1.00,0.01
+--track@ext_e4_rotate4:凸エッジ4角度,-3600,3600,45.00,0.01
+
 --check@ext_c_shadow_en:標準影色を上書き/指定,0
 --color@ext_c_shadow:影色,0xebe11e
 --track@ext_s_x:標準影X,-500,500,10,1
@@ -65,6 +88,29 @@
 --track@ext_h_y:HD影Y,-500,500,10,1
 --track@ext_h_alpha:HD影濃さ(-1維持),-1,100,-1,1
 --group
+
+--hide@ext_e1_width1:ext_c_e1_en==0
+--hide@ext_e1_height1:ext_c_e1_en==0
+--hide@ext_e1_rotate1:ext_c_e1_en==0
+
+--hide@ext_e2_width1:ext_c_e2_en==0
+--hide@ext_e2_height1:ext_c_e2_en==0
+--hide@ext_e2_rotate1:ext_c_e2_en==0
+
+--hide@ext_e3_width3:ext_c_e3_en==0
+--hide@ext_e3_height3:ext_c_e3_en==0
+--hide@ext_e3_rotate3:ext_c_e3_en==0
+
+--hide@ext_e4_width4:ext_c_e4_en==0
+--hide@ext_e4_height4:ext_c_e4_en==0
+--hide@ext_e4_rotate4:ext_c_e4_en==0
+
+--hide@ext_z_sx:ext_c_z_en==0
+--hide@ext_z_sy:ext_c_z_en==0
+--hide@ext_z_px:ext_c_z_en==0
+--hide@ext_z_py:ext_c_z_en==0
+--hide@ext_z_alpha:ext_c_z_en==0
+--hide@ext_z_col:ext_c_z_en==0
 
 --hide@ext_b1_size:ext_c_b1_en==0
 --hide@ext_b1_blur:ext_c_b1_en==0
@@ -79,6 +125,7 @@
 --hide@ext_h_x:ext_c_hshadow_en==0
 --hide@ext_h_y:ext_c_hshadow_en==0
 --hide@ext_h_alpha:ext_c_hshadow_en==0
+
 
 ----------------- モジュールを読み込み、読み込めていなかったらエラーをログに出力
 
