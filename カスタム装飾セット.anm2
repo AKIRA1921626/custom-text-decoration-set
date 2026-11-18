@@ -16,8 +16,8 @@
 --check@text_alter_size:テロッププリセット時、装飾サイズをテキストと連動,1
 
 --group:カラー・グラデーション設定,false
---check@ext_c_text_dis:文字色を無効化,0
---check@ext_c_text_en:文字色を上書き,0
+--check@ext_c_text_dis:カスタム装飾セットでの文字色を無効化,0
+--check@ext_c_text_en:カスタム装飾セットでの文字色を上書き,0
 --color@ext_c_text:上書き文字色,0xffffff
 --check@grd_enable:グラデーション,0
 --color@grd_start_col:グラデ開始色,0xff0000
