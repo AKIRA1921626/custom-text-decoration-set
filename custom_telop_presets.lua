@@ -548,6 +548,37 @@ function M.telop_presets(p, b_obj)
         end
     end
 
+    if p.zen == 1 then
+        local buff_s_w,buff_s_h = obj.screen_w,obj.screen_h
+        obj.setoption("drawtarget","tempbuffer",buff_s_w,buff_s_h)
+        obj.copybuffer("cache:custom_text","object")
+        obj.clearbuffer("object")
+
+        if p.zimg_path ~= "" then
+            local success_or_failure = obj.load("image", p.zimg_path) -- 画像が指定されていれば画像を読み込み
+            if success_or_failure then -- 画像の読み込みが成功したか否か真偽判定
+                if p.zimg_c_en ~= 0 then -- 色を濃くするか否かのcheckが入っていれば実行
+                    obj.effect("単色化","強さ",p.zimg_str,"色",p.zimg_col,"輝度を保持する",1)
+                end
+            else -- 画像が指定されているが読み込みに失敗したら図形を読み込み
+                obj.load("figure",p.zsh,p.zcol,100)
+            end
+        else -- 画像がそもそも指定されていなければ図形を読み込み
+            obj.load("figure",p.zsh,p.zcol,100)
+        end
+        
+        local w,h = obj.w,obj.h
+        obj.effect("リサイズ","拡大率",100.000,"X",w + p.zsx,"Y",h + p.zsy,"補間なし",0,"ピクセル数でサイズ指定",0)
+        if p.zfrm_s > 0 then -- 縁取りのサイズが0以上ならば
+            obj.effect("縁取り", "サイズ", p.zfrm_s * p.prisets_resize, "ぼかし", p.zfrm_b, "縁色", p.zfrm_col)
+        end
+        obj.draw(p.zpx,p.zpy,0,1,p.zal/100)
+        obj.copybuffer("object","cache:custom_text")
+        obj.draw()
+        obj.setoption("drawtarget","framebuffer")
+        obj.load("tempbuffer")
+        obj.clearbuffer("tempbuffer")
+    end
 end
 
 return M
